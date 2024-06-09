@@ -1,0 +1,51 @@
+apiVersion :  v1
+kind :  ConfigMap
+metadata :
+  name :  densify-annotator-config 
+  namespace: densify
+data : 
+  densify-annotator-config.properties : |
+    #
+    #  Copyright (c) 2022-, Densify Inc. D/B/A Densify #  All Rights Reserved.
+    #
+    #  For Densify 2022+
+    #
+    [GENERAL]
+    recommendations-file = /data-export/densify_recos.json
+    set-annotations = true
+    set-labels = false
+    add-to-controllers = false
+    verbose = false
+
+    [FILTERS]
+    # number of days a recommendation has been the same (unchanged)
+    minDaysRecoUnchanged = 1
+
+    # Filters for INCLUDING annotations/labels
+    all-namespaces      = false
+    include-namespaces  = 
+    include-pods        =
+    include-containers  =
+    # cluster             = 
+
+    # Filters for EXCLUDING annotations/labels
+    except-namespaces   = kube-system
+    except-pods         = istio-proxy, linkerd-proxy
+    except-containers   =
+
+    [ANNOTATIONS]
+    # Annotation/Label key/value pairs
+    # The list of variables that can be used can be found in the README
+    # Notes: You can have as many key=value annotation/label pairs as you wish. Max annotation/label (key/value) length is 63 characters.
+
+    # sample:
+    densify.com/recommendation_info = Added {curDate}@{curTime}. Contact name goes here (name@company.abc) for more info.
+    densify.com/{containerName} = {recommendationType} requests: cpu:{containerRecCPUReq}m, mem:{containerRecMemReq}Mi, limits: cpu:{containerRecCPULim}m, mem:{containerRecMemLim}Mi
+
+
+    [LABELS]
+    # Label settings
+    # IMPORTANT NOTE: This may break the linkage between controllers & pods so we do not recommend setting dynamic labels this way unless you know what you're doing.
+    # A valid label must be an empty string or consist of alphanumeric characters, '-', '_' or '.', and must start and end with an alphanumeric character (e.g. 'MyValue',  or 'my_value',  or '12345', regex used for validation is '(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?').
+    # Note: Max label length is 63 characters.
+    # densify.com = Optimization_available_in_annotations

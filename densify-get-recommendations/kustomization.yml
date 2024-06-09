@@ -1,0 +1,8 @@
+# kubectl create -k .
+
+resources:
+- pvc.yml
+- configmap.yml
+- secret.yml
+- densify-get-recommendations.yml
+# - cronjob.yml

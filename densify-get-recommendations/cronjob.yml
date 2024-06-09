@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: densify-get-recommendations-job
+  namespace: densify
+spec:
+  # every Saturday @ 8pm (off-hours)
+  schedule: "0 20 * * 6"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - image: ssvyper/densify-get-recommendations:latest
+            args:
+            # - -c /config/instance-config.properties
+            imagePullPolicy: Always
+            name: densify-get-recommendations
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+            volumeMounts:
+            - mountPath: /config
+              name: densify-instance-config
+            - mountPath: /data-export
+              name: densify-data-export
+          volumes:
+          - name: densify-instance-config
+            configMap:
+              name: densify-instance-config
+              items:
+                - key: instance-config.properties
+                  path: instance-config.properties
+          - name: densify-data-export
+            persistentVolumeClaim:
+                claimName: densify-volume-claim
+          restartPolicy: OnFailure

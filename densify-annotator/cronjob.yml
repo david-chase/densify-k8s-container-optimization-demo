@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: densify-annotator-job
+  namespace: densify
+spec:
+  # every night @ 4am
+  schedule: "0 4 * * *"
+  # every 1 hour
+  # schedule: "0 * * * *"
+  # every 5 minutes (for testing only)
+  # schedule: "*/5 * * * *"
+  # every 1 minute (for testing only)
+  # schedule: "* * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - image: ssvyper/densify-annotator:latest
+            args:
+            # - -c=/config/densify-annotator-config.properties
+            imagePullPolicy: Always
+            name: densify-annotator
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+            volumeMounts:
+            - mountPath: /config
+              name: densify-annotator-config
+              readOnly: true
+            - mountPath: /data-export
+              name: densify-data-export
+
+          volumes:
+          - name: densify-annotator-config
+            configMap:
+              name: densify-annotator-config
+              items:
+                - key: densify-annotator-config.properties
+                  path: densify-annotator-config.properties
+          - name: densify-data-export
+            persistentVolumeClaim:
+                claimName: densify-volume-claim
+          restartPolicy: Never

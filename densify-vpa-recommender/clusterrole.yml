@@ -1,0 +1,11 @@
+# https://github.com/kubernetes-client/python/blob/master/examples/in_cluster_config.py
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: densify-vpa-recommender
+rules:
+- apiGroups: ["autoscaling.k8s.io"]
+  resources: ["verticalpodautoscalers"]
+  # verbs: ["create", "delete", "deletecollection", "get", "list"]
+  verbs: ["create", "delete", "get", "list"]
+  

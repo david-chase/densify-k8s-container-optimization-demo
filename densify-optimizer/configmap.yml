@@ -1,0 +1,41 @@
+apiVersion :  v1
+kind :  ConfigMap
+metadata :
+  name :  densify-optimizer-config 
+  namespace: densify
+data : 
+  densify-optimizer-config.properties : |
+    #
+    #  Copyright (c) 2022-, Densify Inc. D/B/A Densify #  All Rights Reserved.
+    #
+    #  For Densify 2022+
+    #
+    [GENERAL]
+    recommendations-file = /data-export/densify_recos.json
+    # test-k8s-permissions = false
+    # verbose = true
+
+    # Advanced settings
+    # cpuUnits = m
+    # memUnits = Mi
+
+
+    [FILTERS]
+    # Filters for INCLUDING recommendations
+    all-namespaces = false
+    include-namespaces = qa-inc
+    include-pods       =  
+    include-containers = den-web
+    # options for include-controllers are: all, deployment, daemonset, statefulset, cronjob
+    include-controllers = deployment
+    cluster = k8master
+
+    # Filters for EXCLUDING recommendations
+    except-namespaces = kube-system
+    except-pods       =
+    except-containers = istio-proxy, linkerd-proxy
+    # options for exclude-controllers are: deployment, daemonset, statefulset, cronjob
+    except-controllers= replicaset,statefulset
+
+    # number of days a recommendation has been the same (unchanged)
+    minDaysRecoUnchanged = 1

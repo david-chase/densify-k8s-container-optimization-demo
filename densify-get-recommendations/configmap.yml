@@ -1,0 +1,31 @@
+apiVersion:  v1
+kind:  ConfigMap
+metadata:
+  name: densify-instance-config
+  namespace: densify
+data: 
+  instance-config.properties: |
+    #
+    #  Copyright (c) 2022-, Densify Inc. #  All Rights Reserved.
+    #
+    #  For Densify 2022+
+    #
+    [CONNECTION]
+    url = https://k13.densifydemo.com
+    port = 30000
+    api = /api/v2
+    user = admin
+    pass = Cirba1!
+
+    [CLUSTER]
+    cluster_name = k8master
+    exact_cluster_name_matching = false
+
+    [OTHER]
+    # Advanced Options
+    # export_dir = /data-export
+    # We are going to redirect the output for the purposes of the demo
+    export_filename = temp.json
+    # secret_auth = /etc/secret-volume
+    # res_auth = /authorize
+    # res_all_analyses = /analysis/containers/kubernetes

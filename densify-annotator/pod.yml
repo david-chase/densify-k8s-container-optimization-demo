@@ -1,0 +1,39 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: densify-annotator
+  namespace: densify
+spec:
+  containers:
+  - image: ssvyper/densify-annotator:latest
+    args:
+    # - -c=/config/densify-annotator-config.properties
+    imagePullPolicy: Always
+    name: densify-annotator
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /config
+      name: densify-annotator-config
+      readOnly: true
+    - mountPath: /data-export
+      name: densify-data-export
+
+    # # for testing
+    # command:
+    #   - /bin/sh
+    #   - "-c"
+    #   - "sleep 30m"
+
+  volumes:
+  - name: densify-annotator-config
+    configMap:
+      name: densify-annotator-config
+      items:
+        - key: densify-annotator-config.properties
+          path: densify-annotator-config.properties
+  - name: densify-data-export
+    persistentVolumeClaim:
+        claimName: densify-volume-claim
+  restartPolicy: Never

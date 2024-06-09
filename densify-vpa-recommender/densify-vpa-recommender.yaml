@@ -1,0 +1,33 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: densify-vpa-recommender
+  namespace: densify
+spec:
+  containers:
+  - image: ssvyper/densify-vpa-recommender:latest
+    args:
+    # - -c=/config/densify-vpa-recommender-config.properties
+    imagePullPolicy: Always
+    name: densify-vpa-recommender
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /config
+      name: densify-vpa-recommender-config
+      readOnly: true
+    - mountPath: /data-export
+      name: densify-data-export
+
+  volumes:
+  - name: densify-vpa-recommender-config
+    configMap:
+      name: densify-vpa-recommender-config
+      items:
+        - key: densify-vpa-recommender-config.properties
+          path: densify-vpa-recommender-config.properties
+  - name: densify-data-export
+    persistentVolumeClaim:
+        claimName: densify-volume-claim
+  restartPolicy: Never

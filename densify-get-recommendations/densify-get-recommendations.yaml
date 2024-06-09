@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: densify-get-recommendations
+  namespace: densify
+spec:
+  containers:
+  - image: ssvyper/densify-get-recommendations:latest
+    args:
+    - -c /config/instance-config.properties
+    name: densify-get-recommendations
+    imagePullPolicy: Always
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /config
+      name: densify-instance-config
+      readOnly: true
+    - mountPath: /data-export
+      name: densify-data-export
+      readOnly: false
+    - mountPath: "/config-auth"
+      name: densify-instance-auth
+      readOnly: true
+  # Force this pod onto the primary node
+  nodeName: minikube
+
+  volumes:
+  - name: densify-instance-config
+    configMap:
+      name: densify-instance-config
+      items:
+        - key: instance-config.properties
+          path: instance-config.properties
+  - name: densify-data-export
+    persistentVolumeClaim:
+      claimName: densify-volume-claim
+  - name: densify-instance-auth
+    secret:
+      secretName: densify-instance-auth
+  restartPolicy: Never
+  

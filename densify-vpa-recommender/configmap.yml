@@ -1,0 +1,66 @@
+apiVersion :  v1
+kind :  ConfigMap
+metadata :
+  name :  densify-vpa-recommender-config 
+  namespace: densify
+data : 
+  densify-vpa-recommender-config.properties : |
+    #
+    #  Copyright (c) 2022-, Densify Inc. D/B/A Densify #  All Rights Reserved.
+    #
+    #  For Densify 2022+
+    #
+    [GENERAL]
+    recommendations-file = /data-export/densify_recos.json
+    # cleanup-all-vpa-objects = true
+    # verbose = true
+
+    # The VPA Update Mode
+    # Possible options: Off, Auto, Initial, Recreate
+    updateMode = Off
+
+    # Advanced settings
+    # minimum cpu request recommendations (in mCores):
+    # minCPURequestsInmCores = 10
+    # minimum memory request recommendations (in kilobytes) (default: 256Mb):
+    # minMemRequestsInMB = 50
+    # log-file = ./build-image/apply-densify-vpa-recommendations/sample-config/change.log
+    # log-max-files = 2
+    log-max-size = 10240
+    # log-max-size = 10485760    # bytes; 10MB default
+
+    # Upper/lower-bound range; if the current values are within the recommended upper/lower ranges, the container resource values will not be changed (if/when applying for running containers)
+    # Plus Or Minus CPU mCores:
+    plusOrMinusCPUmCores = 0
+    # Plus Or Minus Mem MB:
+    plusOrMinusMemMB = 0
+
+    # test-k8s-permissions = false
+
+    # Kubernetes CRD version
+    # vpaVersion = "v1"
+    # VPA recommender name
+    # vpaRecommenderName = Densify-Recommender
+    # VPA controlled resources
+    # vpaControlledResources = cpu, memory
+
+    [FILTERS]
+    # Filters for INCLUDING recommendations
+    all-namespaces = false
+    include-namespaces = qa-inc
+    # include-pods       =
+    # include-containers =
+    # cluster = 
+    # options for include-controllers are: all, deployment, replicaset, daemonset, statefulset, cronjob
+    # include-controllers = deployment
+
+    # Filters for EXCLUDING recommendations
+    except-namespaces = kube-system
+    # except-pods       =
+    except-containers = istio-proxy, linkerd-proxy
+    # options for exclude-controllers are: deployment, replicaset, daemonset, statefulset, cronjob
+    # except-controllers=
+
+    # number of days a recommendation has been the same (unchanged)
+    minDaysRecoUnchanged = 10
+

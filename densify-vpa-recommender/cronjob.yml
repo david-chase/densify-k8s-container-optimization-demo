@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: densify-vpa-recommender-job
+  namespace: densify
+spec:
+  # every night @ 8pm
+  schedule: "0 20 * * *"
+  # every 1 hour (for testing only)
+  # schedule: "0 * * * *"
+  # every 5 minutes (for testing only)
+  # schedule: "*/5 * * * *"
+  # every 1 minute (for testing only)
+  # schedule: "* * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - image: ssvyper/densify-vpa-recommender:latest
+            args:
+            # - -c=/config/densify-vpa-recommender-config.properties
+            imagePullPolicy: Always
+            name: densify-vpa-recommender
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+            volumeMounts:
+            - mountPath: /config
+              name: densify-vpa-recommender-config
+              readOnly: true
+            - mountPath: /data-export
+              name: densify-data-export
+          volumes:
+          - name: densify-vpa-recommender-config
+            configMap:
+              name: densify-vpa-recommender-config
+              items:
+                - key: densify-vpa-recommender-config.properties
+                  path: densify-vpa-recommender-config.properties
+          - name: densify-data-export
+            persistentVolumeClaim:
+                claimName: densify-volume-claim
+          restartPolicy: OnFailure

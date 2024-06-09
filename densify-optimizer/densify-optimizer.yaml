@@ -1,0 +1,41 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: densify-optimizer
+  namespace: densify
+spec:
+  containers:
+  - image: ssvyper/densify-optimizer:latest
+    args:
+    # - -c=/config/densify-optimizer.properties
+    imagePullPolicy: Always
+    name: densify-optimizer
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /config
+      name: densify-optimizer-config
+      readOnly: true
+    - mountPath: /data-export
+      name: densify-data-export
+  # Force this pod onto the primary node
+  nodeName: minikube
+
+    # # for testing
+    # command:
+    #   - /bin/sh
+    #   - "-c"
+    #   - "sleep 5m"
+
+  volumes:
+  - name: densify-optimizer-config
+    configMap:
+      name: densify-optimizer-config
+      items:
+        - key: densify-optimizer-config.properties
+          path: densify-optimizer-config.properties
+  - name: densify-data-export
+    persistentVolumeClaim:
+        claimName: densify-volume-claim
+  restartPolicy: Never

@@ -1,0 +1,8 @@
+# kubectl create -k .
+
+resources:
+- configmap.yml
+- clusterrole.yml
+- clusterrolebinding.yml
+- densify-vpa-recommender.yaml
+# - cronjob.yml

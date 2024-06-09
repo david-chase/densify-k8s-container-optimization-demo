@@ -1,0 +1,8 @@
+# kubectl create -k .
+
+resources:
+- configmap.yml
+- clusterrole.yml
+- clusterrolebinding.yml
+- pod.yml
+# - cronjob.yml
